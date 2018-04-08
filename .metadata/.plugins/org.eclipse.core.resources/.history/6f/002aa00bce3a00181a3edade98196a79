@@ -1,0 +1,31 @@
+package passmatrix;
+import java.sql.Connection;
+import java.sql.DriverManager;
+
+import com.mysql.jdbc.PreparedStatement;
+public class connectSql {
+	
+public static void connectionToMySQL(String s_username, String s_image, Integer s_cell) {
+	try {
+		Connection con =DriverManager.getConnection("jdbc:mysql://localhost/passmatrix", "root", "root");
+		System.out.println("success");
+		String query = " insert into register (username, image, cell)"
+		        + " values (?, ?, ?)";
+
+		      // create the mysql insert preparedstatement
+		      PreparedStatement preparedStmt = (PreparedStatement) con.prepareStatement(query);
+		      preparedStmt.setString (1, s_username);
+		      preparedStmt.setString (2, s_image);
+		      preparedStmt.setInt(3, s_cell);	      
+		      preparedStmt.execute();
+		      con.close();
+	}catch(Exception e) {
+		System.out.println("error");
+	}
+}
+public static void main(String [] args) {
+	
+}
+
+
+}
