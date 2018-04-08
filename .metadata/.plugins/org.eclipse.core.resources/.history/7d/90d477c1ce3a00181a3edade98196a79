@@ -3,7 +3,6 @@ package passmatrix;
 import java.io.BufferedReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 
 import com.mysql.jdbc.PreparedStatement;
 import java.io.InputStreamReader;
@@ -18,18 +17,28 @@ import java.util.Map;
 import org.json.JSONObject;
 public class Send_HTTP_Post_Request {
 public static void main(String[] args) {
-	String choice=null;
+	String value="";
+	if(value=="register") {
 	try {
-		String status=Send_HTTP_Post_Request.call_me(choice);
+		String status=Send_HTTP_Post_Request.call_me();
 		
 		} catch (Exception e) {
 		e.printStackTrace();
 		}
+		}
+	else if(value=="login") {
+		try {
+			Send_HTTP_Post_Request.call_me();
+			} catch (Exception e) {
+			e.printStackTrace();
+			}
+			}
+	}
+	 private static void register() {
+	// TODO Auto-generated method stub
+	
 }
-	
-	
-public static String call_me(String choice) throws Exception {
-		String status=null;
+	public static String call_me() throws Exception {
 		 ServerSocket sr=new ServerSocket(4500);
 		 System.out.println("listening for connection to port 4500");
 		 Socket cn=sr.accept(); 
@@ -54,14 +63,8 @@ public static String call_me(String choice) throws Exception {
 	    System.out.println("username- "+form_data.getString("username"));
 	    System.out.println("image- "+form_data.getString("image"));
 	    System.out.println("cell- "+form_data.getString("cell"));
-	    if(choice=="register") {
-	      status= connectionToMySQL(form_data.getString("username"),form_data.getString("username"),form_data.getString("username"));
-	    }
-	    else if (choice=="login") {
-	    	status= connectionToMySQL_login(form_data.getString("username"),form_data.getString("username"),form_data.getString("username"));
-	 	   
-	    }
-	     cn.close();
+	     String status= connectionToMySQL(form_data.getString("username"),form_data.getString("username"),form_data.getString("username"));
+	    cn.close();
 	    sr.close();
 	    return status;
 	}
@@ -88,43 +91,4 @@ public static String call_me(String choice) throws Exception {
 	 		return "error";
 	 	}
 	 }
-	 
-	 
-	 public static String connectionToMySQL_login(String s_username, String s_image, String s_cell) {
-		 String status = null;
-		 try {
-		 		
-		 		Connection con =DriverManager.getConnection("jdbc:mysql://localhost/passmatrix", "root", "root");
-		 		System.out.println("success");
-		 		String query = " select (username, image, cell)"
-		 		        + " from pass where username=s_username";
-
-		 		      // create the mysql insert preparedstatement
-		 		      PreparedStatement preparedStmt = (PreparedStatement) con.prepareStatement(query);
-		 		     ResultSet result=preparedStmt.executeQuery();
-		 		     while(result.next()) {
-		 		    	 System.out.println(result.getString(1)+" "+result.getString(2)+" "+result.getString(3));
-		 		    	 String name=result.getString(1);
-		 		    	 String image=result.getString(2);
-		 		    	 String cell=result.getString(3);
-		 		    	 if(name.equals(s_username) & image.equals(s_image) & cell.equals(s_cell)) {
-		 		    		 System.out.println("Validation complete");
-		 		    		status="success";
-		 		    	 }
-		 		    	 else
-		 		    		 status= "error";
-		 		     }
-		 		     
-		 		      con.close();
-		 		      
-		 	}catch(Exception e) {
-		 		System.out.println("error");
-		 		status= "error";
-		 	}
-			return status;
-		 }
-	 
-	 
-	 
-	 
 }
